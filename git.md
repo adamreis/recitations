@@ -164,7 +164,7 @@ tutorital](https://help.github.com/articles/generating-ssh-keys) to help out.
 All you should need to do is Step 4 - adding ssh keys.
 
 3. Try [forking](https://help.github.com/articles/fork-a-repo) [this
-repository](https://github.com/cs3157/recitations). Pull your fork to
+repository](https://github.com/adamreis/recitations). Pull your fork to
 your local machine.
 
     **Digression**: One of the reasons git is so great for working

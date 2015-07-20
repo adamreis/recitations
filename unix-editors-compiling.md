@@ -1,43 +1,3 @@
-## Logging in ##
-
-(Remember: If you don't have a CS/clic account, you'll need to request one from 
-the CS department first.)
-
-Logging in is fairly simple if you're in the clic lab. Just use your UNI and 
-password on any of the machines when prompted. You may have to back out once 
-to be able to enter your UNI.
-
-Remember that your password isn't necessarily the same as your UNI password, 
-its the one you used when creating your clic account.
-
-If you're on a Mac:
-
-- Open up Terminal
-- type `ssh your_uni@clic-lab.cs.columbia.edu` You will be prompted for your 
-clic password. Enter it.
-- NOTE: if you want to enable X11 forwarding (this will allow you to share 
-graphical programs as well as the shell with the remote machine) append the X 
-(must be capital) flag to your ssh command. 
-`ssh your_uni@clic-lab.cs.columbia.edu -X`
-- You will now be in a remote shell session on a random machine in the clic 
-cluster.
-
-If you're on Windows:
-
-- Download and install either [Putty](http://cuit.columbia.edu/putty-software) 
-or [MobaXterm](http://mobaxterm.mobatek.net/)
-- Each program has a fairly simple to use GUI for connecting, so the relevant 
-information is just:
-  - Username: your_uni
-  - Password: your clic password
-  - Remote server: clic-lab.cs.columbia.edu
-- Click connect and you'll be in a remote shell session on a random machine in 
-the clic cluster.
-
-Also note, if you ever need to connect to a specific machine in the clic 
-cluster (this will be necessary if you want multiple sessions on the same 
-machine) just use `ssh your_uni@machine.clic.cs.columbia.edu`
-
 ## Basic UNIX ##
  
 
@@ -59,30 +19,33 @@ directory `/usr/bin` using the relative path `../../`.
 
 ### Basic Navigation ###
 
-When you log into clic, your current (working) directory will be
-`/home/your_uni`. Check this by typing:
+When you open Terminal, your current (working) directory will be
+`/Users/<your username>`. Check this by **p**rinting the **w**orking **d**irectory:
 
     pwd
 
 This is what's known as your home directory. You can do pretty
 much whatever you want to the files in this directory. You own the place. Let's
-view all the files in the current directory:
+**l**i**s**t all the files in the current directory:
 
     ls
-
-Let's make a new directory here for your work in this class. Use the `mkdir` 
-command to make a new directory:
-
-    mkdir cs3157 
-    mkdir cs3157/learning
-
-Now let's move into your working directory. Use the change directory command,
-`cd`. All three commands below will do the same thing (which ones are the
+    
+See your `Desktop`? Let's move there! Use the **c**hange **d**irectory command. All three commands below will do the same thing (which ones are the
 relative paths?)
 
-    cd cs3157/learning
-    cd ./cs3157/learning
-    cd /home/your_uni/cs3157/learning
+	cd Desktop
+	cd /Users/<your username>/Desktop
+	cd ./Desktop
+
+Let's make a new directory here. Use the `mkdir` 
+command to **m**a**k**e a new **dir**ectory:
+
+    mkdir makeschool 
+    mkdir makeschool/learning
+
+Now let's move into your working directory. 
+
+    cd makeschool/learning
 
 Let's create a new text file using the `touch` command. This will create
 a new empty file if one does not exist, or update the last modified date if a
@@ -100,22 +63,34 @@ are files that start with a .)
 
     ls
     ls -l
+    ls -l -a
     ls -la //we can combine flags for ls
 
 Notice the differences in output each time the command is run. Now let's delete
-our hidden file using the remove command, `rm`.
+our hidden file using the **r**e**m**ove command, `rm`.
 
     rm .hidden.txt
     ls -la
 
-Alright, now lets get rid of the directory we created here. `rm` accepts flags 
-too and won't let you delete directories unless you specify to run it 
+Now let's make a **c**o**p**y of `testing.txt`:
+
+	cp testing.txt testing2.txt
+	
+`testing2.txt` is a boring name. Let's change it! There's no "rename" command in UNIX, but we can hack the **m**o**v**e command to do what we want:
+	
+	mv testing2.txt awesome.sauce
+
+Alright, now lets get rid of the directory we created here. 
+
+	cd ../
+	rm learning
+
+Uh oh! `rm` won't let you delete directories unless you specify to run it 
 recursively (repeatedly go into each subdirectory and delete all files. It will
 also ask for confirmation that you want to delete files unless you tell it to 
-force the delete. For force delete, use `-f` and for recursive use `-r`:
+force the delete.  Luckily, rm accepts flags too. For force delete, use `-f` and for recursive use `-r`:
 
-    cd ../
-    rm learning -rf
+    rm -rf learning
     ls -la
 
 One last thing as a side note: if you ever don't know how to use a command in
@@ -154,8 +129,14 @@ find the command you're looking for.
  
 
 There are two main text editors that you can use from inside terminal: emacs and
-vim. Which you use will ultimately be your decision (you could even write
+vim. Many programmers prefer these to traditional GUI-based text editors for several reasons. Primarily, they can get everything done in one window, they never have to take their hands off their keyboard, there are shortcuts for EVERYTHING, and they look way cooler. I, however, use Sublime Text (a GUI editor). It's also really popular -- it brings a lot of the great tools you'd expect with Vim and Emacs into a GUI that's much more similar to what you're used to with Microsoft Word. 
+
+Which editor you use will ultimately be your decision (you could even write
 everything in pico if you really wanted, but this would be difficult).
+
+### Sublime Text###
+http://www.sublimetext.com/
+(I can give another talk on this if there's enough demand)
 
 ### Vim ###
  
@@ -278,145 +259,3 @@ shortcuts.
     (normal-erase-is-backspace-mode 1)
     ;; make sure your backspace is mapped correctly
     (global-set-key "\C-h" 'backward-delete-char)
-
-
-## Compiling and linking a C Program ##
-
-There are many steps to compiling a program in C. They occur in the following
-order:
-
-  1. *Pre-processing*: This is when the compiler processes lines that start with
-     a hash-mark (#), most significantly `#include`.
-  2. *Compiling*: This converts a source code file (foo.c) into an object file
-     (foo.o) which contains a system dependent compiled representation of the
-     program as described in the source file. This code may contain symbols
-     (like variables and function names) that are not defined in the individual
-     source files.
-  3. *Linking*: This step links code in various object files together, linking
-     up the pieces that are required in all the .o files. This will produce an
-     executable file. 
-
-We'll be using gcc to compile our programs. `gcc` is a shell command that accepts
-a few parameters that we'll be making use of often.
-
-  - `-c [files]` This will compile a list of .c files into .o files without
-    going through the linking stage. This helps separate compilation from linking,
-    and is very useful for Makefiles.
-  - `-o [file]` specifies what gcc's output should be. If none is specified this
-    will default to either: `foo.o` when compiling `foo.c`; or `a.out` when linking
-    to create an executable.
-
-Additionally, you should always use two optional flags to make gcc more helpful:
-  - `-g` This flag will include debugging information when you compile and link.
-    Debugging information helps you when you use tools like valgrind and gdb, for
-    example by indicating line numbers in the source code.
-  - `-Wall` This will turn on all compiler warnings. Warnings are likely problems
-    with your code, but they aren't so severe as to be errors that mean it won't
-    run at all.  These can be small problems now that cause big crashes later, so
-    it's best to turn this on when compiling and fix all warnings.
-
-Let's take a look at this process in an actual program: *myadd*. We'll create a 
-basic program to add two numbers, using a custom addition function.
-
-Let's begin with our main function:
-
-main.c
-
-```c
-#include <stdio.h>
-#include "myadd.h"
-
-int main(int argc, char **argv) {
-  printf("The sum is: %d \n", add(1, 2));
-  return 0;
-}
-```
-
-myadd.h
-
-```c
-#ifndef __MYADD_H__
-#define __MYADD_H__
-int add(int a, int b);
-#endif
-```
-
-Now let's try to compile myadd. First we'll build the object file for main.c. 
-Notice the compiler directive `#include`. This tells the compiler to
-just copy paste the specified file into the current file at that location. The
-reason we include this line in main.c is so that if we reference a function in
-either of these files before it is defined, the compiler can know its header.
-
-As an example, in main.c we have `add(1, 2);`. The compiler wants to make sure
-that this is a valid function call, but knows nothing of the function "add",
-what type it will return, or what its explicit parameters are. Including myadd.h
-will tell the compiler that "add" returns type int, and accepts two integer
-parameters.
-
-Let's compile `main.c` (using our standard `-g -Wall` options):
-
-    gcc -g -Wall -c main.c
-    ls
-
-You should see that you now have a main.o in your directory. There 
-was one other set of directives that we've used now. The `#ifndef` `#define` 
-and `#endif` directives. The first and the last define a block of code that 
-should only be executed if a pre-processor variable is *not* defined. This will
-prevent multiple header files from conflicting. If myadd.h is included more 
-than once, the first time the pre-processor will define \__MYADD_H_ and each 
-time thereafter will skip over the entire file.
-
-Pause here for a moment, and *think*: What haven't we done yet?
-
-We haven't even written the `add()` function yet. It's nowhere at all. However,
-gcc let us compile main.c without even giving us a warning! That's because we
-included `myadd.h`, which gives a prototype for the add function, so gcc knows
-that the function call in `main()` is valid. That's all the compiler needs, it
-doesn't care how `add()` works, just that it will exist and is being validly
-used.
-
-However if we try to link it into an executable, we get an error because during
-linking, it actually needs the code for `add()`:
-
-    gcc -g main.o -o main
-
-So let's go ahead and write myadd.c. We need to include `myadd.h` in myadd.c,
-although it doesn't seem (and isn't strictly) necessary in this simple example.
-In general including the relevant header file helps the compiler catch any
-mistakes (for example,  if you change a function to return a long instead of an
-int, but don't fix it everywhere), and makes sure that every function in the file
-knows about every other function. So always include the relevant header file in
-the corresponding c file.
-
-myadd.c
-
-```c
-#include "myadd.h"
-int add(int x, int y)
-{
-    return x + y;
-}
-```
-
-Now let's compile `myadd.c`
-
-    gcc -g -Wall -c myadd.c
-    ls
-
-And then finally link our two object files into the executable `main`.
-
-    gcc -g myadd.o main.o -o main
-    ls
-
-
-You should now have an executable file in your directory `main`. Calling
-`./main` will run your program. In this scenario, you *must* use `./` to note to
-the shell that you want to execute the program main in the current directory.
-Otherwise it will go looking in all the places it searches for system programs
-like `ls` and `touch` to find `main`.
-
-For more on compiling, linking, and debugging, see 
-[this article](http://cslibrary.stanford.edu/107/UnixProgrammingTools.pdf).
-
-In this class you'll be automating compilation and linking with Make, which is
-described in the next recitation.
