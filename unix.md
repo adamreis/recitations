@@ -3,8 +3,7 @@
 
 ### Paths ###
  
-A good place to start with UNIX is the filesystem structure. Our clic machines 
-run Ubuntu linux. Unlike Windows machines, UNIX uses forward slashes to denote 
+A good place to start with UNIX is the filesystem structure. Our macs run OSX, which is built upon a UNIX framework (just like Linux, ChromeOS and Android!). Unlike Windows machines, UNIX uses forward slashes to denote 
 the break between directories and files. An example file path in UNIX might be 
 `/usr/bin/dict`. The path `/` by itself denotes *the highest level directory*. 
 If you start any path with a forward slash, it will assumed to be a path 
